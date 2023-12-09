@@ -1,21 +1,29 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity,ToastAndroid } from 'react-native';
 import { useState } from 'react';
+import * as Clipboard from 'expo-clipboard'
+import BDSenhas from '../Hooks/BDSenhas'
+export function ModalPass({ pass,handClose }) {
+    const {saveItem} = BDSenhas();
 
-export function ModalPass({ pass }) {
+    async function copiarSenha(){
+        await Clipboard.setStringAsync(pass);
+        await saveItem("@pass",pass)
+        ToastAndroid.show('Senha Copiada', ToastAndroid.SHORT);
+    }
 
     return (
         <View style={styles.container}>
             <View style={styles.modalContainer}>
                 <Text style={styles.text}>Senha Gerada</Text>
-                <TouchableOpacity style={styles.inputSenha}>
+                <TouchableOpacity style={styles.inputSenha} onLongPress={copiarSenha}>
                     <Text style={styles.textSenha}>
-                        Teste{pass}
+                        {pass} 
                     </Text>
                 </TouchableOpacity>
 
                 <View style={styles.btns}>
-                <TouchableOpacity style={styles.btnVoltar}>
+                <TouchableOpacity style={styles.btnVoltar} onPress={handClose}>
                     <Text style ={styles.textVoltar}>Voltar</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.btnSalvar}>
