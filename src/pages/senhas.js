@@ -1,13 +1,14 @@
-import { View, Text, StyleSheet, FlatList} from 'react-native'
+import { View, Text, StyleSheet, FlatList,ToastAndroid} from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useState,useEffect } from 'react';
 import { useIsFocused } from '@react-navigation/native';
 import BDSenhas from '../Hooks/BDSenhas'
+import {PassItem} from './component'
 
 export function Pass() {
     const [listPass,setListPass] = useState([]);
     const focused = useIsFocused();
-    const {getItem} = BDSenhas();
+    const {getItem, deleteItem} = BDSenhas();
 
     useEffect(()=>{
         async function loadPass(){
@@ -16,7 +17,12 @@ export function Pass() {
         }
         loadPass();
     },[focused])
-
+    
+    async function deleteSenha(item){
+        const pass = await deleteItem("@pass",item);
+        setListPass(pass);
+        ToastAndroid.show('Senha deletada', ToastAndroid.SHORT);
+    }
     return (
         <SafeAreaView>
             <View style={style.header}>
@@ -26,16 +32,14 @@ export function Pass() {
             </View>
             <View style = {style.contentListSenhas}>
                 <FlatList
-                style ={style.senhas}
                 data={listPass}
                 keyExtractor={(item) =>String(item)}
-                renderItem={({item}) =><Text style = { style.textSenhas}>{item}</Text>}
+                renderItem={({item}) => <PassItem senhas={item} removerSenha ={ ()=> deleteSenha(item)} /> }
                 />
             </View>
         </SafeAreaView>
     )
 }
-
 const style = StyleSheet.create({
     header: {
         backgroundColor:"#392de9",
@@ -50,18 +54,4 @@ const style = StyleSheet.create({
         fontSize:24,
         fontWeight:'bold'
     },
-    contentListSenhas:{
-        paddingTop: 10,
-        alignItems:'center'
-    },
-    senhas:{
-        width:"90%",
-        paddingTop: 10,
-        backgroundColor:"#000",
-    },
-    textSenhas:{
-        paddingTop:5,
-        color: "#fff",
-        fontSize:20
-    }
 })

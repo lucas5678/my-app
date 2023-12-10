@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, TouchableOpacity,ToastAndroid } from 'react-nat
 import { useState } from 'react';
 import * as Clipboard from 'expo-clipboard'
 import BDSenhas from '../Hooks/BDSenhas'
+
+
 export function ModalPass({ pass,handClose }) {
     const {saveItem} = BDSenhas();
 
@@ -10,6 +12,7 @@ export function ModalPass({ pass,handClose }) {
         await Clipboard.setStringAsync(pass);
         await saveItem("@pass",pass)
         ToastAndroid.show('Senha Copiada', ToastAndroid.SHORT);
+        handClose();
     }
 
     return (
@@ -27,7 +30,7 @@ export function ModalPass({ pass,handClose }) {
                     <Text style ={styles.textVoltar}>Voltar</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.btnSalvar}>
-                    <Text style ={styles.textSalvar}>Salvar</Text>
+                    <Text style ={styles.textSalvar} onPress={copiarSenha}>Salvar</Text>
                 </TouchableOpacity>
 
                 </View>
